@@ -13,6 +13,8 @@ int main(int argc, char *argv[])
     int col_num = 0;
     int line_num = 0;
     const int LINE_FEED = 10;
+    const int SPACE = 32;
+
     if (argv[1] == NULL)
         printf("Usage: %s <filename>\n", argv[0]);
     else
