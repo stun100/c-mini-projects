@@ -4,4 +4,4 @@ This repository contains the implementations of some projects listed in [Project
 
 ## Projects
 
-- Project 1: [Spell Checker](1_spell_checker/spell_checker.c)
+- Project 1: [Spell Checker](1_spell_checker)
