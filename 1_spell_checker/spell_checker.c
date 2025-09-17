@@ -10,6 +10,9 @@ int main(int argc, char *argv[])
     FILE *file;
     char buff[100];
     int c;
+    int col_num = 0;
+    int line_num = 0;
+    const int LINE_FEED = 10;
     if (argv[1] == NULL)
         printf("Usage: %s <filename>\n", argv[0]);
     else
@@ -23,6 +26,18 @@ int main(int argc, char *argv[])
             return 1;
         }
         while ((c = fgetc(file)) != EOF)
+        {
+            // 10 represents the line feed in ascii
+            if (c == LINE_FEED)
+            {
+                line_num++;
+                col_num = 0;
+            }
+            else
+            {
+                col_num++;
+            }
             printf("%c", c);
+        }
     }
 }
