@@ -8,6 +8,8 @@ To compile and run the program, use the following command:
 gcc spell_checker.c utils.c -o sc.out && ./sc.out data/text_small.txt data/dictionary.txt
 ```
 
+`dictionary_small.txt` and `dictionary_big.txt` are downloaded from [here](https://github.com/dwyl/english-words).
+
 ## Todo
 
 - [ ] Implement a more efficient data structure for the dictionary for faster lookups.
