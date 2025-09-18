@@ -1,17 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int check_dict()
+int check_dict(char *word)
 {
 }
 
 int main(int argc, char *argv[])
 {
     FILE *file;
-    char buff[100];
+    char word[100];
     int c;
     int col_num = 0;
     int line_num = 0;
+    int char_counter = 0;
     const int LINE_FEED = 10;
     const int SPACE = 32;
 
@@ -29,17 +31,22 @@ int main(int argc, char *argv[])
         }
         while ((c = fgetc(file)) != EOF)
         {
-            // 10 represents the line feed in ascii
             if (c == LINE_FEED)
             {
                 line_num++;
                 col_num = 0;
+                memset(word, 0, sizeof(word));
+                char_counter = 0;
             }
-            else
+            else if (c == SPACE)
             {
                 col_num++;
+                printf("%s\n", word);
+                memset(word, 0, sizeof(word));
+                char_counter = 0;
             }
-            printf("%c", c);
+            word[char_counter] = c;
+            char_counter++;
         }
     }
 }
