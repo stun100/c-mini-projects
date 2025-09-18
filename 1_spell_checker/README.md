@@ -5,5 +5,5 @@ This is a simple spell checker program written in C. It reads a text file, check
 To compile and run the program, use the following command:
 
 ```bash
-gcc spell_checker.c utils.c -o sc.out && ./sc.out data/test_small.txt data/words_alpha.txt
+gcc spell_checker.c utils.c -o sc.out && ./sc.out data/text_small.txt data/dictionary.txt
 ```
