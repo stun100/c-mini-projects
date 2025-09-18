@@ -1,0 +1,84 @@
+The quik brownn fox jumpd over the lazi dog.
+Somtimes progrmmers make misstakes in thier code.
+Correct spelling is important, but sum typos slip thru.
+Autocorrect can be helpfull, but it dosnt always no what you meen.
+A relible spell-checker shuld catch wrds like thiss.
+
+Peopel often forgett to double leters in wrds.
+Occured is often mispeled as occured or occurrd.
+Seperete is a comon typo instead of separate.
+Definately is anouther word that gets wrng a lot.
+Becuse many peple rely too much on autocorect.
+
+Ther are also homphones that make things trickie.
+There, their, and theyre can all be mixed up.
+Its vs it’s also causess truble.
+Your and you’re often get swaped.
+Too, two, and to also confuse writters.
+
+Som wrds are typed phoneticaly.
+Nite instead of night.
+Thru instead of through.
+Lite instead of light.
+Cuz instead of because.
+
+Typoes happen when keys are clos together.
+Wokr instead of work.
+Plae instead of play.
+Firend instead of friend.
+Lkie instead of like.
+
+Capitlization errors sneek in too.
+i went to the park on monday.
+the Dog ran Fast but i was Slow.
+She lives in new york city.
+
+Peaple also sometimes add xtra letters.
+Schoool is not correct.
+Buss with two s is rong.
+Happenn is doubled unnesesarily.
+Succesfull should be successful.
+
+Other times they dropp letters entierly.
+Intersting instead of interesting.
+Enviroment instead of environment.
+Govment instead of government.
+Libary instead of library.
+
+Even simple wrds can be mistyped.
+Teh is one of the most common.
+Gril instead of girl.
+Bok instead of book.
+Chiar instead of chair.
+
+Some sntences get evn messier wen typos and misspellings combine.
+For exmple, a long paragraf with multple wrds spelled rong can still be understod by humans but shuld trigger a spel-chek alert.
+Ths is importnt becuz spell-checkers must handel not only comon mistakes but also unusuall combintions.
+
+Many ppl write emails quikly and don’t bother to corect ther mistaks.
+Othrs use txting shorcuts wich makes detection hardr.
+Som just dont care at all about spelling.
+But for softwre, accuracy is crutial.
+
+The prblem is wors when long documnts are full of erors.
+Thats why having a relable checker is key.
+Without it, profesional wrters might embarass themselfs in publik.
+Evryone makes misstakes, but good tools can help prevent them.
+
+Spel-chekers also strugle with foriegn wrds or propper names.
+Misspeling countries like Argentenia, Portugul, Australlia can hapen.
+City names get garbled: Pariss, Londn, Tokiyo.
+Even comon names like Jonh, Micheal, or Stephan can be wrong.
+
+Som mistakes are tricki becuz they sound corect wen read aloud.
+If your program only checks phonetics, it mite miss the diferense.
+Other errors are obvius, like “catz are cut” insted of “cats are cute.”
+But stil, not evry error is straitforward.
+
+Somtmes errors come frm copy-paste.
+Doubl words words happn often.
+Wrong punctuashun also afects clarity.
+Run on sentences can be anoying becuse they nevr end they just keep going without proper braks.
+
+Finaly, this test is ment to be long, noisy, and chalenging.
+If your spel checker can handle all of thiss, it’s probly ready for real-world ussage.
