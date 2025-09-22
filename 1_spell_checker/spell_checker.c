@@ -3,11 +3,14 @@
 #include <string.h>
 #include <ctype.h>
 #include "utils.h"
+#include "hash_map.h"
 
 int main(int argc, char *argv[])
 {
     FILE *file;
     FILE *dict;
+    node *hash_map[TABLE_SIZE];
+    init_hash_map(hash_map);
     char word[16];
     int c;
     int col_num = 1;
@@ -39,6 +42,8 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        load_dict_on_hash_map(dict, hash_map);
+
         while ((c = fgetc(file)) != EOF)
         {
             if (c == LINE_FEED)
@@ -53,7 +58,11 @@ int main(int argc, char *argv[])
                 char_counter++;
                 col_num++;
 
-                if (check_dict(dict, word) == 0)
+                // if (check_dict(dict, word) == 0)
+                // {
+                //     printf("- Line %d, Col %d: \"%s\" appears to be a typo\n", line_num, col_num - char_counter, word);
+                // }
+                if (check_element_hm(word, hash_map) == 0)
                 {
                     printf("- Line %d, Col %d: \"%s\" appears to be a typo\n", line_num, col_num - char_counter, word);
                 }

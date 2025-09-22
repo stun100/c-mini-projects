@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "utils.h"
+#include "hash_map.h"
 
 void compare_string(char *a, char *b)
 {
@@ -94,3 +95,32 @@ int is_alpha(int character)
     }
     return 0;
 }
+
+void load_dict_on_hash_map(FILE *dict, node **hash_map)
+{
+    char buff[256];
+    while (fgets(buff, sizeof(buff), dict))
+    {
+        buff[strcspn(buff, "\n")] = '\0';
+        buff[strcspn(buff, "\r")] = '\0';
+        insert_element(buff, hash_map);
+    }
+
+    // for (int i = 0; i < 20; i++)
+    // {
+    //     fgets(buff, sizeof(buff), dict);
+    //     buff[strcspn(buff, "\n")] = '\0';
+    //     buff[strcspn(buff, "\r")] = '\0';
+    //     insert_element(buff, hash_map);
+    // }
+    fclose(dict);
+}
+
+// int main(void)
+// {
+//     FILE *dict = fopen("data/dictionary_big.txt", "r");
+//     node *hash_map[TABLE_SIZE];
+//     init_hash_map(hash_map);
+//     load_dict_on_hash_map(dict, hash_map);
+//     print_hash_map(hash_map);
+// }

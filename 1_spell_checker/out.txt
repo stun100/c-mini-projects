@@ -1,6 +1,0 @@
-Current file: data/test_small.txt
-------------------------------------------------------
-- Line 1, Col 5: "quik" appears to be a typo
-- Line 2, Col 1: "brownn" appears to be a typo
-- Line 11, Col 1: "fox" appears to be a typo
-- Line 11, Col 5: "fox" appears to be a typo
