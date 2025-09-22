@@ -12,6 +12,6 @@ gcc spell_checker.c utils.c hash_map.c linked_list.c -o sc.out && ./sc.out data/
 
 ## Todo
 
-- [ ] Implement a more efficient data structure for the dictionary for faster lookups.
+- [x] Implement a more efficient data structure for the dictionary for faster lookups.
 - [ ] Add support for suggestions for misspelled words.
 - [ ] Make GUI.
