@@ -65,14 +65,27 @@ void lower(char *str)
     }
 }
 
-int check_dict(FILE *dict, char *word)
+SearchStrategy parse_strategy(const char *arg)
+{
+    if (strcmp(arg, "hashmap") == 0)
+    {
+        return STRATEGY_HASHMAP;
+    }
+    else if (strcmp(arg, "linear") == 0)
+    {
+        return STRATEGY_LINEAR;
+    }
+    return STRATEGY_UNKNOWN;
+}
+
+int linear_search(Dictionary *dict, char *word)
 {
     char line[256];
     lower(word);
     // reset position of the pointer locating to the start of the file
-    rewind(dict);
+    rewind(dict->data);
 
-    while (fgets(line, sizeof(line), dict))
+    while (fgets(line, sizeof(line), dict->data))
     {
         lower(line);
         line[strcspn(line, "\n")] = '\0';
