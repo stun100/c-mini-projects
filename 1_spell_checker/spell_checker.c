@@ -7,10 +7,11 @@
 
 int main(int argc, char *argv[])
 {
-    FILE *file;
-    FILE *dict;
+    FILE *text_file;
+    FILE *dict_file;
     node *hash_map[TABLE_SIZE];
-    init_hash_map(hash_map);
+    Dictionary *dictionary;
+    const char *strategy_arg;
     char word[16];
     int c;
     unsigned int col_num = 1;
@@ -21,31 +22,59 @@ int main(int argc, char *argv[])
     const int SPACE = 32;
     memset(word, 0, sizeof(word));
 
-    if (argv[1] == NULL)
-        printf("Usage: %s <filename>\n", argv[0]);
+    if (argc < 3)
+    {
+        fprintf(stderr, "Usage: %s <filename> <dictionary> <strategy>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
     else
     {
-        printf("Current file: %s\n", argv[1]);
-        printf("------------------------------------------------------\n");
-        // file = fopen("test.txt", "r");
-        // dict = fopen("dict_test.txt", "r");
-        file = fopen(argv[1], "r");
-        dict = fopen(argv[2], "r");
+        text_file = fopen(argv[1], "r");
+        dict_file = fopen(argv[2], "r");
+        strategy_arg = (argc > 3) ? argv[argc - 1] : "linear";
 
-        if (file == NULL)
+        SearchStrategy strategy = parse_strategy(strategy_arg);
+
+        if (text_file == NULL)
         {
-            printf("Error: Could not open the file \"%s\"\n", argv[1]);
-            return 1;
+            fprintf(stderr, "Error: Could not open the file \"%s\"\n", argv[1]);
+            return EXIT_FAILURE;
         }
-        if (dict == NULL)
+        if (dict_file == NULL)
         {
-            printf("Error: Could not open the file \"%s\"\n", argv[2]);
-            return 1;
+            fprintf(stderr, "Error: Could not open the file \"%s\"\n", argv[2]);
+            return EXIT_FAILURE;
         }
+        if (strategy == STRATEGY_UNKNOWN)
+        {
+            fprintf(stderr, "Unknown strategy '%s'. Defaulting to linear search.\n", strategy_arg);
+            strategy = STRATEGY_LINEAR;
+        }
+        fprintf(stderr, "Current file: %s\n", argv[1]);
 
-        load_dict_on_hash_map(dict, hash_map);
+        switch (strategy)
+        {
+        case STRATEGY_LINEAR:
+            printf("Strategy: Linear\n");
+            dictionary = malloc(sizeof(Dictionary));
+            dictionary->data = dict_file;
+            dictionary->check = linear_search;
+            break;
+        case STRATEGY_HASHMAP:
+            printf("Strategy: Hash map\n");
+            init_hash_map(hash_map);
+            load_dict_on_hash_map(dict_file, hash_map);
+            dictionary = malloc(sizeof(Dictionary));
+            dictionary->data = hash_map;
+            dictionary->check = hashmap_search;
+            break;
+        default:
+            fprintf(stderr, "Unexpected error: invalid strategy\n");
+            return EXIT_FAILURE;
+        }
+        printf("------------------------------------------------------\n\n");
 
-        while ((c = fgetc(file)) != EOF)
+        while ((c = fgetc(text_file)) != EOF)
         {
             if (c == LINE_FEED)
             {
@@ -59,12 +88,7 @@ int main(int argc, char *argv[])
                 char_counter++;
                 col_num++;
 
-                // if (check_dict(dict, word) == 0)
-                // {
-                //     typo_counter++;
-                //     printf("- Line %d, Col %d: \"%s\" appears to be a typo\n", line_num, col_num - char_counter, word);
-                // }
-                if (check_element_hm(word, hash_map) == 0)
+                if (dictionary->check(dictionary, word) == 0)
                 {
                     typo_counter++;
                     printf("- Line %d, Col %d: \"%s\" appears to be a typo\n", line_num, col_num - char_counter, word);
@@ -88,4 +112,6 @@ int main(int argc, char *argv[])
         printf("------------------------------------------------------\n");
         printf("Tot num of typos: %d\n", typo_counter);
     }
+
+    return EXIT_SUCCESS;
 }

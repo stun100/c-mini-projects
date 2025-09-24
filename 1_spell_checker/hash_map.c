@@ -71,8 +71,9 @@ void insert_element(char *word, node **hash_map)
     }
 }
 
-int check_element_hm(char *word, node **hash_map)
+int hashmap_search(Dictionary *dict, char *word)
 {
+    node **hash_map = dict->data;
     lower(word);
     int hash_value = hash_function(word);
 
