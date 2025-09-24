@@ -74,7 +74,7 @@ int check_dict(FILE *dict, char *word)
 
     while (fgets(line, sizeof(line), dict))
     {
-
+        lower(line);
         line[strcspn(line, "\n")] = '\0';
         line[strcspn(line, "\r")] = '\0';
         // compare_string(word, line);
@@ -101,6 +101,7 @@ void load_dict_on_hash_map(FILE *dict, node **hash_map)
     char buff[256];
     while (fgets(buff, sizeof(buff), dict))
     {
+        lower(buff);
         buff[strcspn(buff, "\n")] = '\0';
         buff[strcspn(buff, "\r")] = '\0';
         insert_element(buff, hash_map);

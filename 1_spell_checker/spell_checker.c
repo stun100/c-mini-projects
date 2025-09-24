@@ -13,9 +13,10 @@ int main(int argc, char *argv[])
     init_hash_map(hash_map);
     char word[16];
     int c;
-    int col_num = 1;
-    int line_num = 1;
-    int char_counter = 0;
+    unsigned int col_num = 1;
+    unsigned int line_num = 1;
+    unsigned int char_counter = 0;
+    unsigned int typo_counter = 0;
     const int LINE_FEED = 10;
     const int SPACE = 32;
     memset(word, 0, sizeof(word));
@@ -60,10 +61,12 @@ int main(int argc, char *argv[])
 
                 // if (check_dict(dict, word) == 0)
                 // {
+                //     typo_counter++;
                 //     printf("- Line %d, Col %d: \"%s\" appears to be a typo\n", line_num, col_num - char_counter, word);
                 // }
                 if (check_element_hm(word, hash_map) == 0)
                 {
+                    typo_counter++;
                     printf("- Line %d, Col %d: \"%s\" appears to be a typo\n", line_num, col_num - char_counter, word);
                 }
 
@@ -82,5 +85,7 @@ int main(int argc, char *argv[])
                 col_num++;
             }
         }
+        printf("------------------------------------------------------\n");
+        printf("Tot num of typos: %d\n", typo_counter);
     }
 }

@@ -59,8 +59,9 @@ void insert_element(char *word, node **hash_map)
 
 int check_element_hm(char *word, node **hash_map)
 {
-    int hash_value = hash_function(word);
     lower(word);
+    int hash_value = hash_function(word);
+
     if (hash_map[hash_value] == NULL)
     {
         return 0;
