@@ -8,6 +8,11 @@ To compile and run the program, use the following command:
 gcc spell_checker.c utils.c hash_map.c linked_list.c -o sc.out && time ./sc.out data/text_small.txt data/dictionary_small.txt linear
 ```
 
+You can test different search strategies by changing the last argument to:
+
+- `linear`: Linear search
+- 'hashmap': Hash map search
+
 `dictionary_small.txt` and `dictionary_big.txt` are downloaded from [here](https://github.com/dwyl/english-words).
 
 ## Todo
