@@ -3,7 +3,7 @@
 #include "linked_list.h"
 #include "utils.h"
 
-const unsigned int TABLE_SIZE = 100;
+const unsigned int TABLE_SIZE = 1000;
 
 // unsigned int hash_function(char *word)
 // {
