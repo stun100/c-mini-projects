@@ -3,25 +3,39 @@
 #include "linked_list.h"
 #include "utils.h"
 
-const unsigned int TABLE_SIZE = 10;
+const unsigned int TABLE_SIZE = 100;
 
+// unsigned int hash_function(char *word)
+// {
+//     int len;
+//     // if hash_value is not initialized, it will hold
+//     // an arbitraty value that makes hash_function not deterministic
+//     unsigned int hash_value = 0;
+
+//     len = strlen(word);
+//     // printf("len: %d\n", len);
+//     // choose the hashing strategy
+//     for (int i = 0; i < len; i++)
+//     {
+//         hash_value += word[i];
+//         hash_value = (hash_value * word[i]) % TABLE_SIZE;
+//     }
+
+//     return hash_value;
+// }
+
+// http://www.cse.yorku.ca/~oz/hash.html
 unsigned int hash_function(char *word)
 {
-    int len;
-    // if hash_value is not initialized, it will hold
-    // an arbitraty value that makes hash_function not deterministic
-    unsigned int hash_value = 0;
+    unsigned int hash_value = 5381;
+    int c;
 
-    len = strlen(word);
-    // printf("len: %d\n", len);
-    // choose the hashing strategy
-    for (int i = 0; i < len; i++)
+    while ((c = *word++))
     {
-        hash_value += word[i];
-        hash_value = (hash_value * word[i]) % TABLE_SIZE;
+        hash_value = ((hash_value << 5) + hash_value) + c;
     }
 
-    return hash_value;
+    return hash_value % TABLE_SIZE;
 }
 
 void init_hash_map(node **hash_map)
