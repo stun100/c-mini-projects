@@ -18,6 +18,6 @@ You can test different search strategies by changing the last argument to:
 ## Todo
 
 - [x] ~~Implement a more efficient data structure for the dictionary for faster lookups.~~
-- [ ] Implement trie.
+- [x] ~~Implement trie.~~
 - [ ] Add support for suggestions for misspelled words.
 - [ ] Make GUI.

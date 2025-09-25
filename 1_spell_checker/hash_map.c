@@ -3,7 +3,7 @@
 #include "linked_list.h"
 #include "utils.h"
 
-const unsigned int TABLE_SIZE = 1000;
+const int TABLE_SIZE = 1000;
 
 // unsigned int hash_function(char *word)
 // {
@@ -88,6 +88,19 @@ int hashmap_search(Dictionary *dict, char *word)
     }
 
     return 1;
+}
+
+void load_dict_on_hash_map(FILE *dict, node **hash_map)
+{
+    char buff[256];
+    while (fgets(buff, sizeof(buff), dict))
+    {
+        lower(buff);
+        buff[strcspn(buff, "\n")] = '\0';
+        buff[strcspn(buff, "\r")] = '\0';
+        insert_element(buff, hash_map);
+    }
+    fclose(dict);
 }
 
 // int main(void)

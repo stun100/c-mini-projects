@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include "utils.h"
 #include "hash_map.h"
+#include "trie.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
     FILE *dict_file;
     node *hash_map[TABLE_SIZE];
     Dictionary *dictionary;
+    trieNode *root;
     const char *strategy_arg;
     char word[16];
     int c;
@@ -67,6 +69,14 @@ int main(int argc, char *argv[])
             dictionary = malloc(sizeof(Dictionary));
             dictionary->data = hash_map;
             dictionary->check = hashmap_search;
+            break;
+        case STRATEGY_TRIE:
+            printf("Strategy: Trie\n");
+            root = create_node_trie('\0');
+            load_dict_on_trie(dict_file, root);
+            dictionary = malloc(sizeof(Dictionary));
+            dictionary->data = root;
+            dictionary->check = search_trie;
             break;
         default:
             fprintf(stderr, "Unexpected error: invalid strategy\n");

@@ -4,58 +4,7 @@
 #include <ctype.h>
 #include "utils.h"
 #include "hash_map.h"
-
-void compare_string(char *a, char *b)
-{
-    int i = 0;
-    while (1)
-    {
-        if (a[i] == '\0')
-        {
-            printf("|0|");
-            break;
-        }
-        else if (a[i] == '\n')
-        {
-            printf("|^|, ");
-            i++;
-        }
-        else
-        {
-            printf("|%c %d|, ", a[i], a[i]);
-            i++;
-        }
-    }
-    printf("\n");
-    i = 0;
-    while (1)
-    {
-        if (b[i] == '\0')
-        {
-            printf("|0|");
-            break;
-        }
-        else if (b[i] == '\n')
-        {
-            printf("|n|");
-            i++;
-        }
-        else
-        {
-            printf("|%c %d|, ", b[i], b[i]);
-            i++;
-        }
-    }
-    printf("\n");
-}
-
-void compare_string2(char *a, char *b)
-{
-    int i = 0;
-    while ((a[i] != '\0') || (b[i] != '\0'))
-    {
-    }
-}
+#include "trie.h"
 
 void lower(char *str)
 {
@@ -74,6 +23,10 @@ SearchStrategy parse_strategy(const char *arg)
     else if (strcmp(arg, "linear") == 0)
     {
         return STRATEGY_LINEAR;
+    }
+    else if (strcmp(arg, "trie") == 0)
+    {
+        return STRATEGY_TRIE;
     }
     return STRATEGY_UNKNOWN;
 }
@@ -107,27 +60,6 @@ int is_alpha(int character)
         return 1;
     }
     return 0;
-}
-
-void load_dict_on_hash_map(FILE *dict, node **hash_map)
-{
-    char buff[256];
-    while (fgets(buff, sizeof(buff), dict))
-    {
-        lower(buff);
-        buff[strcspn(buff, "\n")] = '\0';
-        buff[strcspn(buff, "\r")] = '\0';
-        insert_element(buff, hash_map);
-    }
-
-    // for (int i = 0; i < 20; i++)
-    // {
-    //     fgets(buff, sizeof(buff), dict);
-    //     buff[strcspn(buff, "\n")] = '\0';
-    //     buff[strcspn(buff, "\r")] = '\0';
-    //     insert_element(buff, hash_map);
-    // }
-    fclose(dict);
 }
 
 // int main(void)
