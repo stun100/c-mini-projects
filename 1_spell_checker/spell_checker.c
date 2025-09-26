@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     Dictionary *dictionary;
     trieNode *root;
     const char *strategy_arg;
-    char word[16];
+    char word[256];
     int c;
     unsigned int col_num = 1;
     unsigned int line_num = 1;
