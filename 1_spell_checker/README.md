@@ -5,7 +5,7 @@ This is a simple spell checker program written in C. It reads a text file, check
 To compile and run the program, use the following command:
 
 ```bash
-make && make test
+./build_and_run.sh [text_file] [dictionary_file] [search_strategy]
 ```
 
 You can test different search strategies by changing the last argument to:
