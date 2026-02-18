@@ -1,0 +1,1 @@
+gcc -o httpal httpal.c && ./httpal
