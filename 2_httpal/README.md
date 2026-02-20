@@ -1,0 +1,15 @@
+# HTTPal
+
+CLI programs to make HTTP requests and responds with the output.
+
+To compile and run the program, use the following command:
+
+```bash
+clang++ -o httpal && ./httpal [url]
+```
+
+## Todo
+
+- [x] ~~Handle GET request~~
+- [ ] Chunked transfer decoding
+- [ ] Other request types
