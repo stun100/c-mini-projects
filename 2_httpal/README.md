@@ -11,5 +11,6 @@ clang++ -o httpal && ./httpal [url]
 ## Todo
 
 - [x] ~~Handle GET request~~
+- [x] ~~Handle POST request~~
 - [ ] Chunked transfer decoding
 - [ ] Other request types
