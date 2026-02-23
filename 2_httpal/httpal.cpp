@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     std::string response;
     std::string body;
     
-    while((opt = getopt(argc, argv, "X:H:d:")) != -1){
+    while((opt = getopt(argc, argv, "X:d:H:")) != -1){
         switch (opt){
             case 'X':
                 request_method = optarg;
@@ -132,8 +132,10 @@ int main(int argc, char* argv[]) {
                 request =  "POST /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + header + "\r\n" + "Connection: close\r\n" + "Content-Length: " +std::to_string(data.length()) + "\r\n\r\n" +data;
                 break;
             case RequestMethod::PUT:
+                request =  "PUT /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + header + "\r\n" + "Connection: close\r\n" + "Content-Length: " +std::to_string(data.length()) + "\r\n\r\n" +data;
                 break;
             case RequestMethod::DELETE:
+                request =  "DELETE /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + header + "\r\n" + "Connection: close\r\n\r\n";
                 break;  
             case RequestMethod::UNKNOWN:
                 Print("httpal: Wrong request method.");
