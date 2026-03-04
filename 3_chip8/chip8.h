@@ -18,27 +18,37 @@ class Chip8 {
         static constexpr std::uint8_t FONTSET_START_ADDRESS = 0x50;
         static constexpr std::uint16_t ROM_START_ADDRESS = 0x200;
 
+        std::array<std::array<uint8_t, DISPLAY_HEIGHT>, DISPLAY_WIDTH> display{{}};
+       
         Chip8();
 
         bool load_rom(const std::string& file_path);
         void cycle();
+
+        //DEBUG
+        uint16_t get_opcode() const { return current_opcode; }
+        void set_opcode(uint16_t opcode) { current_opcode = opcode; }
+        const std::array<uint8_t, REGISTER_SIZE>& get_V() const { return V; }
+        uint16_t get_I() const { return I; }
+        
         
 
     private:
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTER_SIZE> V{};
-        std::array<std::array<uint8_t, DISPLAY_HEIGHT>, DISPLAY_WIDTH> display{{}};
+        
         std::stack<uint16_t> stack;
 
-        uint16_t I{0};
-        uint16_t program_counter{ROM_START_ADDRESS};
-        uint8_t delay_timer{0};
-        uint8_t sound_timer{0};
+        std::uint16_t I{0};
+        std::uint16_t program_counter{ROM_START_ADDRESS};
+        std::uint8_t delay_timer{0};
+        std::uint8_t sound_timer{0};
+        std::uint16_t current_opcode{0};
 
         void load_fontset();
         std::uint16_t fetch();
-        void decode(std::uint16_t instruction);
-        void execute();
+        void decode(std::uint16_t opcode);
+        
 
         static const std::uint8_t fontset[FONTSET_SIZE];
 };
