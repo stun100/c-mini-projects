@@ -20,7 +20,7 @@ class Chip8 {
 
         std::array<std::array<uint8_t, DISPLAY_HEIGHT>, DISPLAY_WIDTH> display{{}};
        
-        Chip8();
+        Chip8(bool debug_mode);
 
         bool load_rom(const std::string& file_path);
         void cycle();
@@ -34,6 +34,8 @@ class Chip8 {
         
 
     private:
+        bool is_debug = false;
+
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTER_SIZE> V{};
         

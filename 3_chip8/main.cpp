@@ -7,22 +7,49 @@ const int SCALE = 10;
 
 int main(int argc, char* argv[])  {
 
-    Chip8 chip8;
+    bool debug_mode = false;
+    if (strcmp(argv[1], "d"))
+    {
+        debug_mode = true;
+    }
+
+    Chip8 chip8(debug_mode);
     chip8.load_rom("../games/ibm_logo.ch8");
 
-    InitWindow(chip8.DISPLAY_WIDTH*SCALE, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Manual Step Mode");
-    // InitWindow(chip8.DISPLAY_WIDTH*SCALE + 200, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Manual Step Mode");
+    if (debug_mode)
+    {
+        InitWindow(chip8.DISPLAY_WIDTH*SCALE + 200, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Manual Step Mode");
+    }
+    else 
+    {
+        InitWindow(chip8.DISPLAY_WIDTH*SCALE, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Manual Step Mode");
+    }
+
+    
+   
     SetTargetFPS(60); 
 
     while (!WindowShouldClose()) {
 
-        // if (IsKeyPressed(KEY_SPACE)) {
-            
-        // }
-        chip8.cycle();
-
         BeginDrawing();
         ClearBackground(BLACK);
+        
+        if (debug_mode){
+            if (IsKeyPressed(KEY_SPACE)) {
+                chip8.cycle();
+            }
+
+            int sidebarX = chip8.DISPLAY_WIDTH * SCALE + 10;
+            int offset = 16 * 15 + 20;
+
+            DrawText(TextFormat("OP: 0x%04X", chip8.get_opcode()), sidebarX, offset, 15, YELLOW);
+            DrawText(TextFormat("I : 0x%03X", chip8.get_I()), sidebarX, offset + 20, 15, RAYWHITE);
+        } else 
+        {
+            chip8.cycle();
+        }
+
+
 
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 64; x++) 
@@ -32,7 +59,11 @@ int main(int argc, char* argv[])  {
                     DrawRectangle(x * SCALE, y * SCALE, SCALE, SCALE, WHITE);
                 }
                 
-                // DrawRectangleLines(x * SCALE, y * SCALE, SCALE, SCALE, (Color){ 155, 30, 30, 255 });
+                if (debug_mode)
+                {
+                    DrawRectangleLines(x * SCALE, y * SCALE, SCALE, SCALE, (Color){ 155, 30, 30, 255 });
+                }
+                
             }
         }
 
@@ -43,13 +74,6 @@ int main(int argc, char* argv[])  {
                     chip8.DISPLAY_WIDTH * SCALE + 10, 10 + (i * 15), 12, RAYWHITE);
         }
 
-        // int sidebarX = chip8.DISPLAY_WIDTH * SCALE + 10;
-        // int offset = 16 * 15 + 20;
-
-        // DrawText(TextFormat("OP: 0x%04X", chip8.get_opcode()), sidebarX, offset, 15, YELLOW);
-        // DrawText(TextFormat("I : 0x%03X", chip8.get_I()), sidebarX, offset + 20, 15, RAYWHITE);
-
-        
         EndDrawing();
     }
 
