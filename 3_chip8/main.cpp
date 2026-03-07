@@ -2,6 +2,7 @@
 #include "chip8.h"
 #include <iostream>
 #include <filesystem>
+#include <cstring>
 
 const int SCALE = 18;
 
@@ -10,7 +11,7 @@ int main(int argc, char* argv[])  {
     std::string file_path = "../games/1-chip8-logo.ch8";
 
     if (argc >= 2) {
-        if (std::strcmp(argv[1], "-d") == 0) {
+        if (strcmp(argv[1], "-d") == 0) {
             debug_mode = true;
             if (argc >= 3) {
                 file_path = argv[2];
@@ -30,8 +31,6 @@ int main(int argc, char* argv[])  {
     {
         InitWindow(chip8.DISPLAY_WIDTH*SCALE, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8");
     }
-
-    
    
     SetTargetFPS(120);
     while (!WindowShouldClose()) {
@@ -54,8 +53,8 @@ int main(int argc, char* argv[])  {
             chip8.cycle();
         }
 
-        for (int y = 0; y < 32; y++) {
-            for (int x = 0; x < 64; x++) 
+        for (int y = 0; y < chip8.DISPLAY_HEIGHT; y++) {
+            for (int x = 0; x < chip8.DISPLAY_WIDTH; x++) 
             {
                 if (chip8.display[x][y] != 0) 
                 {
