@@ -3,17 +3,24 @@
 #include <iostream>
 #include <filesystem>
 
-const int SCALE = 16;
+const int SCALE = 18;
 
 int main(int argc, char* argv[])  {
     bool debug_mode = false;
-    if (argc == 2 && strcmp(argv[1], "d"))
-    {
-        debug_mode = true;
+    std::string file_path = "../games/1-chip8-logo.ch8";
+
+    if (argc >= 2) {
+        if (std::strcmp(argv[1], "-d") == 0) {
+            debug_mode = true;
+            if (argc >= 3) {
+                file_path = argv[2];
+            }
+        } else {
+            file_path = argv[1];
+        }
     }
-    
     Chip8 chip8(debug_mode);
-    chip8.load_rom("../games/ibm_logo.ch8");
+    chip8.load_rom(file_path);
 
     if (debug_mode)
     {
@@ -26,8 +33,7 @@ int main(int argc, char* argv[])  {
 
     
    
-    SetTargetFPS(60); 
-
+    SetTargetFPS(120);
     while (!WindowShouldClose()) {
 
         BeginDrawing();

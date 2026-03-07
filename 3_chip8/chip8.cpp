@@ -100,11 +100,6 @@ void Chip8::decode(std::uint16_t opcode)
     std::uint8_t NN = (std::uint8_t) opcode;
     std::uint16_t NNN = opcode & 0x0FFF;
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(0, 255);
-    std::uint8_t random_num = distr(gen);
-
     switch (type)
     {
         case 0x00:
@@ -154,7 +149,7 @@ void Chip8::decode(std::uint16_t opcode)
             break;
         
         case 0x0C:
-            OP_CXNN(X, NN, random_num);
+            OP_CXNN(X, NN);
             break;
 
         case 0x0D:
@@ -185,8 +180,8 @@ void Chip8::OP_00E0()
 void Chip8::OP_OOEE()
 {
     if (is_debug) std::cout << "00EE: RETURN FROM SUBROUTINE" << std::endl;
-    program_counter = stack.top();
-    stack.pop();
+    program_counter = st.top();
+    st.pop();
 }
 
 void Chip8::OP_1NNN(std::uint16_t NNN)
@@ -198,7 +193,7 @@ void Chip8::OP_1NNN(std::uint16_t NNN)
 void Chip8::OP_2NNN(std::uint16_t NNN)
 {
     if (is_debug) std::cout << "2NNN: CALL SUBROUTINE AT " << std::hex << NNN << std::dec << std::endl;
-    stack.push(program_counter);
+    st.push(program_counter);
     program_counter = NNN; 
 }
 
@@ -334,8 +329,12 @@ void Chip8::OP_BNNN(std::uint16_t NNN)
     program_counter = NNN + V[0];
 }
 
-void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN, std::uint8_t random_num)
+void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN)
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(0, 255);
+    std::uint8_t random_num = distr(gen);
     V[X] = random_num & NN;
 }
 

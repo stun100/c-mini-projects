@@ -19,6 +19,7 @@ class Chip8 {
         static constexpr std::uint16_t ROM_START_ADDRESS = 0x200;
 
         std::array<std::array<uint8_t, DISPLAY_HEIGHT>, DISPLAY_WIDTH> display{{}};
+        std::uint8_t current_input{0};
        
         Chip8(bool debug_mode);
 
@@ -39,7 +40,7 @@ class Chip8 {
         std::array<uint8_t, MEMORY_SIZE> memory{};
         std::array<uint8_t, REGISTER_SIZE> V{};
         
-        std::stack<uint16_t> stack;
+        std::stack<std::uint16_t> st;
 
         std::uint16_t I{0};
         std::uint16_t program_counter{ROM_START_ADDRESS};
@@ -60,7 +61,7 @@ class Chip8 {
         void OP_9XY0(std::uint8_t X, std::uint8_t Y);
         void OP_ANNN(std::uint16_t NNN);
         void OP_BNNN(std::uint16_t NNN);
-        void OP_CXNN(std::uint8_t X, std::uint8_t NN, std::uint8_t random_num);
+        void OP_CXNN(std::uint8_t X, std::uint8_t NN);
         void OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N);
         void OP_EX9E();
         void OP_EXA1();
