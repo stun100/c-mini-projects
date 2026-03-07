@@ -3,26 +3,25 @@
 #include <iostream>
 #include <filesystem>
 
-const int SCALE = 10;
+const int SCALE = 16;
 
 int main(int argc, char* argv[])  {
-
     bool debug_mode = false;
-    if (strcmp(argv[1], "d"))
+    if (argc == 2 && strcmp(argv[1], "d"))
     {
         debug_mode = true;
     }
-
+    
     Chip8 chip8(debug_mode);
     chip8.load_rom("../games/ibm_logo.ch8");
 
     if (debug_mode)
     {
-        InitWindow(chip8.DISPLAY_WIDTH*SCALE + 200, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Manual Step Mode");
+        InitWindow(chip8.DISPLAY_WIDTH*SCALE + 200, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Debug");
     }
     else 
     {
-        InitWindow(chip8.DISPLAY_WIDTH*SCALE, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Manual Step Mode");
+        InitWindow(chip8.DISPLAY_WIDTH*SCALE, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8");
     }
 
     
@@ -49,8 +48,6 @@ int main(int argc, char* argv[])  {
             chip8.cycle();
         }
 
-
-
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 64; x++) 
             {
@@ -63,7 +60,6 @@ int main(int argc, char* argv[])  {
                 {
                     DrawRectangleLines(x * SCALE, y * SCALE, SCALE, SCALE, (Color){ 155, 30, 30, 255 });
                 }
-                
             }
         }
 

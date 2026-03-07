@@ -47,6 +47,24 @@ class Chip8 {
         std::uint8_t sound_timer{0};
         std::uint16_t current_opcode{0};
 
+        void OP_00E0();
+        void OP_OOEE();
+        void OP_1NNN(std::uint16_t NNN);
+        void OP_2NNN(std::uint16_t NNN);
+        void OP_3XNN(std::uint8_t X, std::uint8_t NN);
+        void OP_4XNN(std::uint8_t X, std::uint8_t NN);
+        void OP_5XY0(std::uint8_t X, std::uint8_t Y);
+        void OP_6XNN(std::uint8_t X, std::uint8_t NN);
+        void OP_7XNN(std::uint8_t X, std::uint8_t NN);
+        void OP_8XYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N);
+        void OP_9XY0(std::uint8_t X, std::uint8_t Y);
+        void OP_ANNN(std::uint16_t NNN);
+        void OP_BNNN(std::uint16_t NNN);
+        void OP_CXNN(std::uint8_t X, std::uint8_t NN, std::uint8_t random_num);
+        void OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N);
+        void OP_EX9E();
+        void OP_EXA1();
+
         void load_fontset();
         std::uint16_t fetch();
         void decode(std::uint16_t opcode);
