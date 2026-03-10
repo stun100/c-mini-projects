@@ -6,3 +6,4 @@ This repository contains the implementations of some projects listed in [Project
 
 - Project 1: [Spell Checker](1_spell_checker)
 - Project 2: [Httpal](2_httpal)
+- Project 3: [CHIP-8 Emulator](3_chip8)
