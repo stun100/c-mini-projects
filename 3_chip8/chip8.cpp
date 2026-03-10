@@ -109,7 +109,7 @@ void Chip8::decode(std::uint16_t opcode)
             } 
             else if (NNN == 0x00ee)
             {
-               OP_00E0();
+               OP_00EE();
             }
             break;
         case 0x01:
@@ -156,9 +156,19 @@ void Chip8::decode(std::uint16_t opcode)
             OP_DXYN(X,Y,N);
             break;
 
-        // case 0x0E:
-        //     // TODO
-        //     break;
+        case 0x0E:
+            if (NN == 0x9E)
+            {
+                OP_EX9E(X);
+            }
+            else if (NN == 0xA1)
+            {
+                OP_EXA1(X);
+            }
+            break;
+        case 0x0F:
+            OP_FXNN(X, NN);
+            break;
 
     }
 }
@@ -177,11 +187,13 @@ void Chip8::OP_00E0()
     }
 }
 
-void Chip8::OP_OOEE()
+void Chip8::OP_00EE()
 {
-    if (is_debug) std::cout << "00EE: RETURN FROM SUBROUTINE" << std::endl;
-    program_counter = st.top();
-    st.pop();
+    if (!st.empty()){
+        if (is_debug) std::cout << "00EE: RETURN FROM SUBROUTINE" << std::endl;
+        program_counter = st.top();
+        st.pop();
+    }
 }
 
 void Chip8::OP_1NNN(std::uint16_t NNN)
@@ -270,41 +282,55 @@ void Chip8::OP_8XYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N)
             }
             break;
         case 0x5:
+        {
             if (is_debug) std::cout << "8XY5: V[" << (int)X << "] -= V[" << (int)Y << "] WITH BORROW" << std::endl;
-            if (V[X] > V[Y])
+            
+            std::uint8_t temp_flag = 0;
+            if (V[X] >= V[Y])
             {
-                V[REGISTER_SIZE - 1] = 1;
+                temp_flag = 1;
             }
-            else
-            {
-                V[REGISTER_SIZE - 1] = 0;
-            } 
             V[X] = V[X] - V[Y];
+            V[REGISTER_SIZE - 1] = temp_flag;
+            
             break;
+        }
+
         case 0x6:
+        {
             if (is_debug) std::cout << "8XY6: SHIFT RIGHT V[" << (int)X << "]" << std::endl;
             V[X] = V[Y];
-            V[REGISTER_SIZE - 1] = V[X] & 0x1;
+            std::uint8_t temp = V[X] & 0x1;
             V[X] = V[X] >> 1;
+            V[REGISTER_SIZE - 1] = temp;
             break;
+        }
+
         case 0x7:
+        {
             if (is_debug) std::cout << "8XY7: V[" << (int)X << "] = V[" << (int)Y << "] - V[" << (int)X << "]" << std::endl;
-            if (V[Y] > V[X])
+            
+            std::uint8_t temp_flag = 0;
+            if (V[Y] >= V[X])
             {
-                V[REGISTER_SIZE - 1] = 1;
+                temp_flag = 1;
             }
-            else
-            {
-                V[REGISTER_SIZE - 1] = 0;
-            } 
             V[X] = V[Y] - V[X];
+            V[REGISTER_SIZE - 1] = temp_flag;
+            
             break;
+        }
+
         case 0xE:
+        {
             if (is_debug) std::cout << "8XYE: SHIFT LEFT V[" << (int)X << "]" << std::endl;
             V[X] = V[Y];
-            V[REGISTER_SIZE - 1] = (V[X] & 0x80) >> 7;
+            std::uint8_t temp = (V[X] & 0x80) >> 7;
             V[X] = V[X] << 1;
+            V[REGISTER_SIZE - 1] = temp;
             break;
+        }
+
     }
 }
 
@@ -338,7 +364,7 @@ void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN)
     V[X] = random_num & NN;
 }
 
- void Chip8::OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N)
+void Chip8::OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N)
  {
     if (is_debug) std::cout << "DXYN: DRAW SPRITE AT V[" << (int)X << "], V[" << (int)Y << "]" << std::endl;
     std::uint8_t X_coord = V[X] % DISPLAY_WIDTH;
@@ -378,7 +404,7 @@ void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN)
     }
  }
 
- void Chip8::OP_EX9E(std::uint8_t X)
+void Chip8::OP_EX9E(std::uint8_t X)
  {
     if (V[X] == current_input)
     {
@@ -386,10 +412,60 @@ void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN)
     }
  }
 
- void Chip8::OP_EXA1(std::uint8_t X)
+void Chip8::OP_EXA1(std::uint8_t X)
  {
     if (V[X] != current_input)
     {
         program_counter += 2;
     }
  }
+
+void Chip8::OP_FXNN(std::uint8_t X, std::uint8_t NN)
+{
+
+    switch (NN)
+    {
+        case 0x1E:
+            I += V[X];
+            break;
+        
+        case 0x0A:
+            if (current_input == 99)
+            {
+                program_counter -= 2;
+            } else 
+            {
+                V[X] = current_input;
+            }
+            break;
+        case 0x29:
+            I = V[X];
+            break;
+        case 0x33:
+        {
+            std::uint8_t V_X = V[X];
+            std::uint8_t first = V_X/100;
+            V_X = V_X%100;
+            std::uint8_t second = V_X/10;
+            V_X = V_X%10;
+            std::uint8_t third = V_X;
+            memory[I] = first;
+            memory[I+1] = second;
+            memory[I+2] = third;
+            break;
+        }
+
+        case 0x55:
+            for (int i = 0; i <= X; i++)
+            {
+                memory[I+i] = V[i];
+            }
+            break;
+        case 0x65:
+            for (int i = 0; i <= X; i++)
+            {
+                V[i] = memory[I+i];
+            }
+            break;
+    }
+}

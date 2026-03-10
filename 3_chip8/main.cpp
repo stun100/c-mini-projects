@@ -32,9 +32,10 @@ int main(int argc, char* argv[])  {
         InitWindow(chip8.DISPLAY_WIDTH*SCALE, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8");
     }
    
-    SetTargetFPS(120);
+    SetTargetFPS(700);
     while (!WindowShouldClose()) {
 
+        chip8.current_input = 99;
         if (IsKeyDown(KEY_ONE)) chip8.current_input = 0x1;
         if (IsKeyDown(KEY_TWO)) chip8.current_input = 0x2;
         if (IsKeyDown(KEY_THREE)) chip8.current_input = 0x3;
@@ -53,7 +54,7 @@ int main(int argc, char* argv[])  {
         if (IsKeyDown(KEY_V)) chip8.current_input = 0xF;
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(BROWN);
         
         if (debug_mode){
             if (IsKeyPressed(KEY_SPACE)) {
@@ -75,7 +76,7 @@ int main(int argc, char* argv[])  {
             {
                 if (chip8.display[x][y] != 0) 
                 {
-                    DrawRectangle(x * SCALE, y * SCALE, SCALE, SCALE, WHITE);
+                    DrawRectangle(x * SCALE, y * SCALE, SCALE, SCALE, GOLD);
                 }
                 
                 if (debug_mode)

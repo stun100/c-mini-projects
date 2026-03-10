@@ -19,7 +19,7 @@ class Chip8 {
         static constexpr std::uint16_t ROM_START_ADDRESS = 0x200;
 
         std::array<std::array<uint8_t, DISPLAY_HEIGHT>, DISPLAY_WIDTH> display{{}};
-        std::uint8_t current_input{0};
+        std::uint8_t current_input{99};
        
         Chip8(bool debug_mode);
 
@@ -31,6 +31,7 @@ class Chip8 {
         void set_opcode(uint16_t opcode) { current_opcode = opcode; }
         const std::array<uint8_t, REGISTER_SIZE>& get_V() const { return V; }
         uint16_t get_I() const { return I; }
+        std::array<uint8_t, MEMORY_SIZE> get_memory() const { return memory; }
         
         
 
@@ -49,7 +50,7 @@ class Chip8 {
         std::uint16_t current_opcode{0};
 
         void OP_00E0();
-        void OP_OOEE();
+        void OP_00EE();
         void OP_1NNN(std::uint16_t NNN);
         void OP_2NNN(std::uint16_t NNN);
         void OP_3XNN(std::uint8_t X, std::uint8_t NN);
@@ -65,6 +66,7 @@ class Chip8 {
         void OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N);
         void OP_EX9E(std::uint8_t X);
         void OP_EXA1(std::uint8_t X);
+        void OP_FXNN(std::uint8_t X, std::uint8_t NN);
 
         void load_fontset();
         std::uint16_t fetch();
