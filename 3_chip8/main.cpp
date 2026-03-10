@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <cstring>
 
-const int SCALE = 18;
+const int SCALE = 10;
 
 int main(int argc, char* argv[])  {
     bool debug_mode = false;
@@ -34,6 +34,23 @@ int main(int argc, char* argv[])  {
    
     SetTargetFPS(120);
     while (!WindowShouldClose()) {
+
+        if (IsKeyDown(KEY_ONE)) chip8.current_input = 0x1;
+        if (IsKeyDown(KEY_TWO)) chip8.current_input = 0x2;
+        if (IsKeyDown(KEY_THREE)) chip8.current_input = 0x3;
+        if (IsKeyDown(KEY_FOUR)) chip8.current_input = 0xC;
+        if (IsKeyDown(KEY_Q)) chip8.current_input = 0x4;
+        if (IsKeyDown(KEY_W)) chip8.current_input = 0x5;
+        if (IsKeyDown(KEY_E)) chip8.current_input = 0x6;
+        if (IsKeyDown(KEY_R)) chip8.current_input = 0xD;
+        if (IsKeyDown(KEY_A)) chip8.current_input = 0x7;
+        if (IsKeyDown(KEY_S)) chip8.current_input = 0x8;
+        if (IsKeyDown(KEY_D)) chip8.current_input = 0x9;
+        if (IsKeyDown(KEY_F)) chip8.current_input = 0xE;
+        if (IsKeyDown(KEY_Z)) chip8.current_input = 0xA;
+        if (IsKeyDown(KEY_X)) chip8.current_input = 0x0;
+        if (IsKeyDown(KEY_C)) chip8.current_input = 0xB;
+        if (IsKeyDown(KEY_V)) chip8.current_input = 0xF;
 
         BeginDrawing();
         ClearBackground(BLACK);

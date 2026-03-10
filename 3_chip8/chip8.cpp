@@ -377,3 +377,19 @@ void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN)
         Y_coord++;
     }
  }
+
+ void Chip8::OP_EX9E(std::uint8_t X)
+ {
+    if (V[X] == current_input)
+    {
+        program_counter += 2;
+    }
+ }
+
+ void Chip8::OP_EXA1(std::uint8_t X)
+ {
+    if (V[X] != current_input)
+    {
+        program_counter += 2;
+    }
+ }

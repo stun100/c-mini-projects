@@ -63,8 +63,8 @@ class Chip8 {
         void OP_BNNN(std::uint16_t NNN);
         void OP_CXNN(std::uint8_t X, std::uint8_t NN);
         void OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N);
-        void OP_EX9E();
-        void OP_EXA1();
+        void OP_EX9E(std::uint8_t X);
+        void OP_EXA1(std::uint8_t X);
 
         void load_fontset();
         std::uint16_t fetch();
