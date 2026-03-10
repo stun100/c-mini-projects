@@ -32,6 +32,7 @@ class Chip8 {
         const std::array<uint8_t, REGISTER_SIZE>& get_V() const { return V; }
         uint16_t get_I() const { return I; }
         std::array<uint8_t, MEMORY_SIZE> get_memory() const { return memory; }
+        uint16_t get_pc() const { return program_counter; }
         
         
 
