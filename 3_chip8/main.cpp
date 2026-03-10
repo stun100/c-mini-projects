@@ -25,7 +25,7 @@ int main(int argc, char* argv[])  {
 
     if (debug_mode)
     {
-        InitWindow(chip8.DISPLAY_WIDTH*SCALE + 200, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Debug");
+        InitWindow(chip8.DISPLAY_WIDTH*SCALE + 400, chip8.DISPLAY_HEIGHT*SCALE, "CHIP-8 - Debug");
     }
     else 
     {

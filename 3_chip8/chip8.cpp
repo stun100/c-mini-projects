@@ -357,6 +357,7 @@ void Chip8::OP_BNNN(std::uint16_t NNN)
 
 void Chip8::OP_CXNN(std::uint8_t X, std::uint8_t NN)
 {
+    if (is_debug) std::cout << "CXNN: V[" << (int)X << "] = RANDOM & " << (int)NN << std::endl;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distr(0, 255);
@@ -406,18 +407,20 @@ void Chip8::OP_DXYN(std::uint8_t X, std::uint8_t Y, std::uint8_t N)
 
 void Chip8::OP_EX9E(std::uint8_t X)
  {
-    if (V[X] == current_input)
-    {
-        program_counter += 2;
-    }
+     if (is_debug) std::cout << "EX9E: SKIP IF V[" << (int)X << "] == KEY PRESSED" << std::endl;
+     if (V[X] == current_input)
+     {
+         program_counter += 2;
+     }
  }
 
-void Chip8::OP_EXA1(std::uint8_t X)
+ void Chip8::OP_EXA1(std::uint8_t X)
  {
-    if (V[X] != current_input)
-    {
-        program_counter += 2;
-    }
+     if (is_debug) std::cout << "EXA1: SKIP IF V[" << (int)X << "] != KEY PRESSED" << std::endl;
+     if (V[X] != current_input)
+     {
+         program_counter += 2;
+     }
  }
 
 void Chip8::OP_FXNN(std::uint8_t X, std::uint8_t NN)
@@ -426,10 +429,12 @@ void Chip8::OP_FXNN(std::uint8_t X, std::uint8_t NN)
     switch (NN)
     {
         case 0x1E:
+            if (is_debug) std::cout << "FX1E: I += V[" << (int)X << "]" << std::endl;
             I += V[X];
             break;
         
         case 0x0A:
+            if (is_debug) std::cout << "FX0A: WAIT FOR KEYPRESS, STORE IN V[" << (int)X << "]" << std::endl;
             if (current_input == 99)
             {
                 program_counter -= 2;
@@ -439,10 +444,12 @@ void Chip8::OP_FXNN(std::uint8_t X, std::uint8_t NN)
             }
             break;
         case 0x29:
+            if (is_debug) std::cout << "FX29: SET I TO SPRITE FOR V[" << (int)X << "]" << std::endl;
             I = V[X];
             break;
         case 0x33:
         {
+            if (is_debug) std::cout << "FX33: STORE BCD OF V[" << (int)X << "] AT I" << std::endl;
             std::uint8_t V_X = V[X];
             std::uint8_t first = V_X/100;
             V_X = V_X%100;
@@ -456,12 +463,14 @@ void Chip8::OP_FXNN(std::uint8_t X, std::uint8_t NN)
         }
 
         case 0x55:
+            if (is_debug) std::cout << "FX55: STORE V[0]-V[" << (int)X << "] AT I" << std::endl;
             for (int i = 0; i <= X; i++)
             {
                 memory[I+i] = V[i];
             }
             break;
         case 0x65:
+            if (is_debug) std::cout << "FX65: LOAD V[0]-V[" << (int)X << "] FROM I" << std::endl;
             for (int i = 0; i <= X; i++)
             {
                 V[i] = memory[I+i];
