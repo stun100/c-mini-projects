@@ -4,23 +4,65 @@
 #include <unistd.h>
 
 #include <cstring>
-#include <iostream>
-#include <stdexcept>
 #include <string>
 
-enum class RequestMethod{ GET, POST, PUT, DELETE, UNKNOWN};
+#include <print>
+#include <array>
+#include <cstdint>
 
-struct Url {
+constexpr std::size_t BUFFER_SIZE{4096};
+
+enum class RequestMethod
+{ 
+    GET, 
+    POST, 
+    PUT, 
+    DELETE, 
+    UNKNOWN
+};
+
+class URL 
+{
+private:
     std::string host;
     std::string path;
     int portno;
+    friend class Request;
+public:
+    URL(std::string& url)
+    {
+        portno = 443;
+
+        size_t start = url.find("://");
+        if (start != std::string::npos)
+            // skip :// which has length 3
+            url = url.substr(start + 3);
+
+        size_t pos = url.find("/");
+
+        if (pos == std::string::npos) 
+        {
+            size_t pos_2 = url.find(":");
+            host = url;
+            path = "";
+        } 
+        else 
+        {
+            host = url.substr(0, pos);
+            path = url.substr(pos + 1);
+        }
+
+        size_t hostend = host.find(":");
+        if (hostend != std::string::npos)
+        {
+            portno = std::stoi(host.substr(hostend + 1));
+            host = host.substr(0, hostend);
+        }
+    }
 };
 
-void Print(std::string text) {
-    std::cout << text << std::endl;
-}
-
-RequestMethod hashString(const std::string& str) {
+RequestMethod hashString(const std::string& str) 
+{
     if (str == "GET") return RequestMethod::GET;
     if (str == "POST")  return RequestMethod::POST;
     if (str == "PUT")  return RequestMethod::PUT;
@@ -28,62 +70,153 @@ RequestMethod hashString(const std::string& str) {
     return RequestMethod::UNKNOWN;
 }
 
-std::string ParseResponse(std::string raw_response){
-    size_t headerEnd = raw_response.find("\r\n\r\n");
-    if (headerEnd != std::string::npos) {
-        return raw_response.substr(headerEnd + 4); 
+class Request
+{
+private:
+    struct addrinfo hints;
+    URL url;
+    int sockfd;
+    std::string request;
+    std::string response;
+public:
+    Request(
+        std::string& url, 
+        std::string& request_method,
+        std::string& data,
+        std::string& header
+    ) 
+    : url{url}, hints{}, request{}, response{}
+    {
+        struct addrinfo* res;
+
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_socktype = SOCK_STREAM;
+
+        std::println("Resolving host='{}' port='{}'", this->url.host, this->url.portno);
+
+        // Resolve the url
+        if (getaddrinfo(
+            this->url.host.c_str(), 
+            std::to_string(this->url.portno).c_str(), 
+            &hints, 
+            &res) != 0
+        ) 
+        {
+            throw std::runtime_error("Could not resolve host: " + this->url.host);
+        }
+
+        std::println("[httpal::Request] url resolved");
+
+        // Create the socket
+        sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+        if (connect(sockfd, res->ai_addr, res->ai_addrlen) != 0)
+            throw std::runtime_error("httpal: Socket connection failed");
+
+        std::println("[httpal::Request] connection created");
+
+        freeaddrinfo(res);
+
+        // Setup the request
+        if (request_method.length() != 0)
+        {
+            switch (hashString(request_method)){
+                case RequestMethod::GET:
+                    request =   "GET /" + this->url.path  + " HTTP/1.1\r\n" 
+                                + "Host: " + this->url.host + "\r\n" 
+                                + "Connection: close\r\n"
+                                + "\r\n";
+                    break;
+                case RequestMethod::POST:
+                    request =   "POST /" + this->url.path + " HTTP/1.1\r\n" 
+                                + "Host: " + this->url.host + "\r\n" 
+                                + header 
+                                + "\r\n" 
+                                + "Connection: close\r\n" 
+                                + "Content-Length: " + std::to_string(data.length()) + "\r\n" 
+                                + "\r\n" 
+                                + data;
+                    break;
+                case RequestMethod::PUT:
+                    request =   "PUT /" + this->url.path + " HTTP/1.1\r\n" 
+                                + "Host: " + this->url.host + "\r\n" 
+                                + header  
+                                + "Connection: close\r\n" 
+                                + "Content-Length: " + std::to_string(data.length()) + "\r\n" 
+                                + "\r\n" 
+                                + data;
+                    break;
+                case RequestMethod::DELETE:
+                    request =   "DELETE /" + this->url.path + " HTTP/1.1\r\n" 
+                                + "Host: " + this->url.host + "\r\n" 
+                                + header 
+                                + "\r\n" 
+                                + "Connection: close\r\n";
+                    break;  
+                case RequestMethod::UNKNOWN:
+                    throw std::runtime_error("httpal: Wrong request method.");
+            }
+        } 
+        else 
+        {
+            request =   "GET /" + this->url.path + " HTTP/1.1\r\n" 
+                        + "Host: " + this->url.host + "\r\n" 
+                        + "Connection: close\r\n\r\n";
+        }
+
+        std::println("[httpal::Request] request created");
     }
-    return raw_response;
-}
 
-Url ParseUrl(std::string url){
-    std::string host, path;
-    int port = 80;
+    void send()
+    {
+        ::send(sockfd, request.c_str(), request.size(), 0);
 
-    size_t start = url.find("://");
-    if (start != std::string::npos) {
-        // skip :// which has length 3
-        url = url.substr(start + 3);
+        std::println("[httpal::Request::send] send done");
+
+        std::array<char, BUFFER_SIZE> buffer;
+        int bytesReceived;
+
+        while ((bytesReceived = recv(sockfd, buffer.data(), buffer.size() - 1, 0)) != 0)
+        {
+            buffer.at(bytesReceived) = '\0';
+            response.append(buffer.data(), bytesReceived);
+        }
+
+        std::println("[httpal::Request::send] response collected");
     }
 
-    size_t pos = url.find("/");
+    std::string parseResponse()
+    {
+        std::size_t headerEnd = response.find("\r\n\r\n");
+        if (headerEnd != std::string::npos)
+            return response.substr(headerEnd + 4); 
 
-    if (pos == std::string::npos) {
-        size_t pos_2 = url.find(":");
-        host = url;
-        path = "";
-    } else {
-        host = url.substr(0, pos);
-        path = url.substr(pos + 1);
+        return response;
     }
 
-    size_t hostend = host.find(":");
-    if (hostend != std::string::npos){
-        port = std::stoi(host.substr(hostend + 1));
-        host = host.substr(0, hostend);
+    ~Request()
+    {
+        close(sockfd);
     }
+};
 
-    return {host, path, port};
-}
-
-int main(int argc, char* argv[]) {
-    int sockfd, opt;
-    char buffer[4096];
-    int bytesReceived;
+int main(int argc, char* argv[]) 
+{
+    int opt;
     
     std::string data;
     std::string header;
-    std::string request_method;
+    std::string requestMethod;
 
     std::string url;
     std::string request;
     std::string response;
-    std::string body;
     
-    while((opt = getopt(argc, argv, "X:d:H:")) != -1){
-        switch (opt){
+    while((opt = getopt(argc, argv, "X:d:H:")) != -1)
+    {
+        switch (opt)
+        {
             case 'X':
-                request_method = optarg;
+                requestMethod = optarg;
                 break;
             case 'd':
                 data = optarg;
@@ -92,72 +225,35 @@ int main(int argc, char* argv[]) {
                 header = optarg;
                 break;
             default:
-                Print("httpal: Try 'httpal --help' for more information");
+                std::println("httpal: Try 'httpal --help' for more information");
                 return 1;
         }
     }
 
-    if (optind < argc) {
+    if (optind < argc) 
+    {
         url = argv[optind];
-    } else {
-        Print("httpal: Missing url");
+    } 
+    else 
+    {
+        std::println("httpal: Missing url");
         return -1;
     }
 
-    Url u = ParseUrl(url);
-
-    struct addrinfo hints, *res;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-
-    if (getaddrinfo(u.host.c_str(), std::to_string(u.portno).c_str(), &hints, &res) != 0) {
-        Print("httpal: Could not resolve host: " + u.host);
-        return -1;
-    }
-
-    sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-    if (connect(sockfd, res->ai_addr, res->ai_addrlen) != 0){
-        Print("httpal: Socket connection failed");
-        return -1;
-    }
-    freeaddrinfo(res);
+    Request req 
+    {
+        url, 
+        requestMethod, 
+        data, 
+        header
+    };
     
-    if (request_method.length() != 0){
-        switch (hashString(request_method)){
-            case RequestMethod::GET:
-                request =  "GET /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + "Connection: close\r\n\r\n";
-                break;
-            case RequestMethod::POST:
-                request =  "POST /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + header + "\r\n" + "Connection: close\r\n" + "Content-Length: " +std::to_string(data.length()) + "\r\n\r\n" +data;
-                break;
-            case RequestMethod::PUT:
-                request =  "PUT /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + header + "\r\n" + "Connection: close\r\n" + "Content-Length: " +std::to_string(data.length()) + "\r\n\r\n" +data;
-                break;
-            case RequestMethod::DELETE:
-                request =  "DELETE /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + header + "\r\n" + "Connection: close\r\n\r\n";
-                break;  
-            case RequestMethod::UNKNOWN:
-                Print("httpal: Wrong request method.");
-                return -1;  
-        }
-        
-    } else {
-        request = "GET /" + u.path + " HTTP/1.1\r\n" + "Host: " + u.host + "\r\n" + "Connection: close\r\n\r\n";
-    }
-    // Print(request);
-    send(sockfd, request.c_str(), request.size(), 0);
+    // std::println(request);
+    req.send();
 
-    while ((bytesReceived = recv(sockfd, buffer, sizeof(buffer) - 1, 0)) != 0){
-        buffer[bytesReceived] = '\0';
-        response += buffer;
-    }
+    std::string body = req.parseResponse();
 
-    close(sockfd);
-
-    body = ParseResponse(response);
-
-    Print(body);
+    std::println("{}", body);
 
     return 0;
 }
